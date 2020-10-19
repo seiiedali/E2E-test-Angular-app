@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: objects->address.spec.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: objects->address.spec.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// ------------------------ REQUIRMENTS --------------------------//
+
+/**
+ * require the "LogPage" for doing the login to the web app
+ * require the "AddressPage" for using the elements and functins on this page
+ * require "Operation" for getting the basic functions and do the manual test
+ * require "Navigation" to navigate to desired pages
+ */
+
+var LogPage = require('./page-object/login.pageObject');
+var AddressPage = require('./page-object/objects->address.pageObject');
+var page = new AddressPage();
+var Operation = require('./basic-modules/operations');
+var oper = new Operation();
+var Navigation = require('./basic-modules/navigation');
+var nav = new Navigation();
+
+// ----------------------- DESCRIBE THE TEST CASE -------------------- //
+describe('objects > Address Tests', function () {
+
+    // Login Before Doing Anything
+    beforeAll(() => {
+        nav.goToLogInPage();
+        LogPage.logIn();
+        // LogPage.logIn.doTheLogIn("admin","admin");
+        browser.waitForAngular();
+        // Go to Desired Page
+        nav.goToAddress();
+        // Turn the Dummy Angular Off
+        browser.waitForAngularEnabled(false);
+    });
+
+    // Logout After the Whole test
+    afterAll(()=> {
+        LogPage.logOut();
+        // LogPage.logOut.doTheLogOut();
+    });
+//--------------------------- add Address -----------------------------//
+    
+    it('Add a Address', function () {
+
+
+        // The Test
+
+        /**
+         * this is manual procedure for creating an address,
+         * this will use elements in elm objects in address page object
+         */
+
+        // page.elm.addButton.click();
+        // page.elm.name.sendKeys('new-address');
+        // page.elm.ip.sendKeys('192.168.18.0/24');
+        // page.elm.description.sendKeys('created under the E2E test');
+        // page.elm.saveButton.click();
+        
+        /**
+         * this is an automatic address creation ,
+         * this will use a function in address page object
+         */
+
+        page.addAnAddress("new-address", "192.168.18.0/24" , "created under the E2E test" );
+        
+        oper.viewMoreRecords();
+
+        // Evaluate The Test
+        browser.wait(page.elm.EC.presenceOf(element(by.cssContainingText('span', 'new-address'))), 8 *1000)
+        expect(element(by.cssContainingText('span', 'new-address')).isDisplayed()).toBe(true);
+    });
+
+// ----------------------------- edit Address ---------------------------//
+
+    it( 'Edit Address', function () {
+
+        // The Test
+
+        // /**
+        //  * this is the manual procedure to edit an existing address,
+        //  * it waits for the record's edit to be shown then click on it and 
+        //  * wait until the popup edit window be fully loaded
+        //  * 
+        //  * this will use elements in "elm" objects in "address.pageObject"
+        //  */
+
+        // browser.wait(page.elm.EC.presenceOf(page.elm.editButton), 8*1000);
+        // clickWhenClickable(page.elm.editButton , "edit button");
+        // browser.wait(page.elm.EC.presenceOf(page.elm.editFormLoad), 8*1000);
+        // page.elm.name.clear();
+        // page.elm.name.sendKeys('new-address-Edit');
+        // page.elm.ip.clear().sendKeys('192.168.1.0/32');
+        // page.elm.description.clear().sendKeys('edited under the E2E test');
+        // page.elm.updateButton.click();
+        
+
+        /**
+         * this is an automatic address edit,
+         * this will use a function from "adress.pageObject"
+         */
+
+         page.editAnAddress("new-address" , "new-address-Edit", "192.168.1.0/32" , "this is an address editation uner the E2E test");
+
+
+        // Evaluate The Test
+        browser.wait(page.elm.EC.presenceOf(element(by.cssContainingText('span', 'new-address-Edit'))), 8 *1000)
+        expect(element(by.cssContainingText('span', 'new-address-Edit')).isDisplayed()).toBe(true);
+    });
+
+//------------------------------ clone Address ----------------------------//
+
+    it('clone Address',function(){
+        
+        // The Test
+
+        /**
+         * this is the manual procedure to create a clone address,
+         * 
+         * this will use elements in "elm" object in "address.pageObject"
+         */
+
+        // browser.wait(page.elm.EC.presenceOf(page.elm.cloneButton), 8*1000);
+        // clickWhenClickable(page.elm.cloneButton , "clone button");
+        // browser.wait(page.elm.EC.presenceOf(page.elm.cloneFormLoad),8*1000);
+        // page.elm.name.clear();
+        // page.elm.name.sendKeys('new-address-clone');
+        // page.elm.ip.clear().sendKeys('192.168.1.25');
+        // page.elm.description.clear().sendKeys('clone address created under the E2E test');
+        // page.elm.clone_button.click();
+
+        /**
+         * this is an automatic address clone,
+         * this will use a function from "address.pageObject"
+         */
+        page.cloneAnAddress("new-address-Edit" , "new-address-clone" , "192.168.1.25", "clone address created under the E2E test");
+        
+        browser.wait(page.elm.EC.presenceOf(element(by.cssContainingText('span', 'new-address-clone'))), 8 *1000)
+        expect(element(by.cssContainingText('span', 'new-address-clone')).isDisplayed()).toBe(true);
+    });
+
+// ----------------------------- delete Address ---------------------------//
+    it('delete entries', function(){
+
+        // The Test
+
+        /**
+         * address records can be deleted using "deleteAnAddress" function from
+         * "address.pageObject" which delete the address by recieving its name
+         * 
+         * at the end of the test we check if records are deleted
+         */
+
+        page.deleteAnAddress("new-address-clone");
+        page.deleteAnAddress("new-address-Edit");
+
+        expect(element(by.cssContainingText('span', 'new-address-Edit')).isPresent()).toBe(false);
+        expect(element(by.cssContainingText('span', 'new-address-clone')).isPresent()).toBe(false);
+
+    })
+
+});
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-AddressPage.html">AddressPage</a></li><li><a href="module-BaseElement.html">BaseElement</a></li><li><a href="module-DNS_recordsPage.html">DNS_recordsPage</a></li><li><a href="module-EnviromentVariables.html">EnviromentVariables</a></li><li><a href="module-LogPage.html">LogPage</a></li><li><a href="module-Navigation.html">Navigation</a></li><li><a href="module-Operations.html">Operations</a></li><li><a href="module-PolicyPage.html">PolicyPage</a></li><li><a href="module-SchedulePage.html">SchedulePage</a></li><li><a href="module-VpnPage.html">VpnPage</a></li></ul><h3>Classes</h3><ul><li><a href="module-AddressPage-AddressPage.html">AddressPage</a></li><li><a href="module-BaseElement-BaseElement.html">BaseElement</a></li><li><a href="module-DNS_recordsPage-DNS_recordsPage.html">DNS_recordsPage</a></li><li><a href="module-LogPage-LogPage.html">LogPage</a></li><li><a href="module-Navigation-Navigation.html">Navigation</a></li><li><a href="module-Operations-Operations.html">Operations</a></li><li><a href="module-PolicyPage-PolicyPage.html">PolicyPage</a></li><li><a href="module-SchedulePage-SchedulePage.html">SchedulePage</a></li><li><a href="module-VpnPage-VpnPage.html">VpnPage</a></li></ul><h3>Global</h3><ul><li><a href="global.html#LogPage">LogPage</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Aug 21 2018 10:35:34 GMT+0430 (Iran Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

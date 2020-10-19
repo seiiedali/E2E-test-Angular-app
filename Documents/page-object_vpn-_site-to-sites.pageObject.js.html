@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: page-object/vpn->site-to-sites.pageObject.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: page-object/vpn->site-to-sites.pageObject.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @file Vpn pageObject
+ * @requires Operations to use its functions
+ * @module VpnPage
+ */
+
+
+var oper = require('../basic-modules/operations');
+
+/**
+ * Vpn class (pageObject) for accessing avalible elements and functions in the page
+ * @property {object} elm contains page elements in it
+ * @todo SOME ELEMENTS NEET TO BE CHANGE WITH ID LOCATORS
+ *
+ */
+
+class VpnPage {
+    /**
+     * @constructor
+     */
+    constructor () {
+        this.elm = {
+
+            addButton : element(by.cssContainingText('button', 'add')),
+            name : element(by.css('input[placeholder="Name"]')),
+            presharedKey : element(by.css('input[placeholder="Preshared Key"]')),
+            popupAddButton : element(by.css('button[mattooltip="Add New Network Address"]')),
+            popupVirtualAddButton : element(by.css('button[mattooltip="Add New Service"]')),
+            popupName : element.all(by.css('input[placeholder="Name"]')).last(),
+            ip : element(by.css('input[placeholder="ip"]')),
+            popupSaveButton : element.all(by.cssContainingText('button', 'SAVE')).last(),
+            checkButton : element(by.cssContainingText('button', 'check')),
+            editButton : element(by.id('edit_ESF')),
+            updateButton : element(by.cssContainingText('button', 'UPDATE')),
+            saveButton : element(by.cssContainingText('button', 'SAVE')),
+            description : element(by.css('input[placeholder="Description"]')),
+            deleteMessage : element(by.cssContainingText('div', 'Deleted successfully.')),
+            refreshButton : element.all(by.cssContainingText('button', 'refresh')).first(),
+            EC : protractor.ExpectedConditions,
+            
+            searchInput : element(by.xpath('//input[@placeholder="Search or Add…"]')),
+            GRE_button : element(by.xpath('//div[contains(text() , "GRE")]')),
+            DeadPearDetection : element(by.xpath('//mat-slide-toggle[./descendant::span[contains(text(),"Dead Peer Detection")]]')),
+            editFormLoad : element(by.xpath('//mat-toolbar/descendant::mat-icon[contains(text(),"edit")]')),
+        }
+    };
+    /**
+     * this function select optoin in  KEY exchange and Encryption Algorithm
+     * in the procedure of creating a vpn
+     * @param {string} selectorName - should be Accurate, selector names are like &lt;b>"Phase1 Encryption Algorithm"&lt;/b>
+     * @param {string} optionName - should be Accurate, option names are like &lt;b>"AES-128"&lt;/b>
+     */
+    optionSelector (selectorName , optionName){
+        element(by.css('mat-select[placeholder="'+selectorName+'"]')).click();
+        element(by.cssContainingText('mat-option', optionName)).click();
+    };
+    /**
+     * search for an existing address and add it to vpn, in specified address type
+     * @param {string} addressType -should be accurate,add type are like &lt;b>"Add Local Network"&lt;/b>
+     * @param {string} nameAddress - name of the address to be find
+     */
+    searchAnAddress (addressType , nameAddress){
+        let typeSelector = element(by.cssContainingText('p', addressType));
+        typeSelector.click();
+        this.elm.searchInput.sendKeys(nameAddress);
+        browser.wait(this.elm.EC.presenceOf(oper.selectRow(nameAddress)), 20*1000);
+        oper.clickWhenClickable(oper.selectRow(nameAddress));
+        this.elm.checkButton.click();
+    };
+    /**
+     * create a new address and add it to vpn, in specified address type
+     * @param {string} addressType -should be accurate,add type are like &lt;b>"Add Local Network"&lt;/b>
+     * @param {string} nameAddress - name for creating the new address
+     * @param {string} ipAddress  - ip for creating the new address
+     */
+    addAnAddress (addressType, nameAddress , ipAddress){
+
+        let typeSelector = element(by.cssContainingText('p', addressType));
+        typeSelector.click();
+        this.elm.popupAddButton.click();
+        this.elm.popupName.click().sendKeys(nameAddress)
+        this.elm.ip.click().sendKeys(ipAddress);
+        this.elm.popupSaveButton.click();
+        browser.wait(this.elm.EC.not(this.elm.EC.presenceOf(this.elm.ip)) , 20*1000);
+        this.elm.searchInput.sendKeys(nameAddress);
+        browser.wait(this.elm.EC.presenceOf(oper.selectRow(nameAddress)), 20*1000);
+        oper.clickWhenClickable(oper.selectRow(nameAddress));
+        this.elm.checkButton.click();
+        // oper.waitForMessage();
+    };
+    /**
+     * search for an existing virtual address and add it to vpn, in specified address type
+     * @param {string} addressType -should be accurate,add type are like &lt;b>"Virtual Local Endpoint"&lt;/b>
+     * @param {string} nameAddress  -name of the address to be find
+     */
+    searchVirtualAddress (addressType , nameAddress){
+        let typeSelector = element(by.cssContainingText('h3', addressType));
+        browser.wait(this.elm.EC.presenceOf(typeSelector), 10*1000);
+        typeSelector.click();
+        this.elm.searchInput.sendKeys(nameAddress);
+        browser.wait(this.elm.EC.presenceOf(oper.selectRow(nameAddress)), 20*1000);
+        oper.clickWhenClickable(oper.selectRow(nameAddress));
+        this.elm.checkButton.click();
+    };
+    /**
+     * create a new virtual address and add it to vpn in specified address type
+     * @param {string} addressType -should be accurate,add type are like &lt;b>"Virtual Local Endpoint"&lt;/b>
+     * @param {string} nameAddress - name for creating the new address
+     * @param {string} ipAddress  - ip for creating the new address
+     */
+    addVirtualAddress  (addressType ,nameAddress , ipAddress){
+        let typeSelector = element(by.cssContainingText('h3', addressType ));
+        typeSelector.click();
+        this.elm.popupVirtualAddButton.click();
+        this.elm.popupName.click().sendKeys(nameAddress)
+        this.elm.ip.click().sendKeys(ipAddress);
+        this.elm.popupSaveButton.click();
+        browser.wait(this.elm.EC.not(this.elm.EC.presenceOf(this.elm.ip)) , 20 * 1000);
+        this.elm.searchInput.sendKeys(nameAddress);
+        browser.wait(this.elm.EC.presenceOf(oper.selectRow(nameAddress)), 20*1000);
+        oper.clickWhenClickable(oper.selectRow(nameAddress));
+        this.elm.checkButton.click();
+        // oper.waitForMessage();
+    };
+    /**
+     * delete a vpn by its name
+     * @param {string} entryName -name of the vpn to delete the record
+     */
+    deleteVpn (entryName){
+        let deleteMessage = element.all(by.cssContainingText('div', 'Deleted successfully.')).last();
+        oper.clickWhenClickable(element(by.id('delete_'+ entryName)),"delete button");
+        browser.wait(this.elm.EC.presenceOf(oper.acceptDeletionButton()), 8*1000);
+        oper.clickWhenClickable(oper.acceptDeletionButton(), "accept deletion button");
+        //wait for the message
+        browser.wait(this.elm.EC.presenceOf(deleteMessage),10 * 1000);
+        oper.clickWhenClickable(deleteMessage , "could not click on delete button").then(null, () => {console.log("couldn't click on the delete message")});
+        browser.wait(this.elm.EC.not(this.elm.EC.presenceOf(deleteMessage)),20*1000);
+
+        this.elm.refreshButton.click();
+    };
+}
+
+
+module.exports = new VpnPage();</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-AddressPage.html">AddressPage</a></li><li><a href="module-BaseElement.html">BaseElement</a></li><li><a href="module-DNS_recordsPage.html">DNS_recordsPage</a></li><li><a href="module-EnviromentVariables.html">EnviromentVariables</a></li><li><a href="module-LogPage.html">LogPage</a></li><li><a href="module-Navigation.html">Navigation</a></li><li><a href="module-Operations.html">Operations</a></li><li><a href="module-PolicyPage.html">PolicyPage</a></li><li><a href="module-SchedulePage.html">SchedulePage</a></li><li><a href="module-VpnPage.html">VpnPage</a></li></ul><h3>Classes</h3><ul><li><a href="module-AddressPage-AddressPage.html">AddressPage</a></li><li><a href="module-BaseElement-BaseElement.html">BaseElement</a></li><li><a href="module-DNS_recordsPage-DNS_recordsPage.html">DNS_recordsPage</a></li><li><a href="module-LogPage-LogPage.html">LogPage</a></li><li><a href="module-Navigation-Navigation.html">Navigation</a></li><li><a href="module-Operations-Operations.html">Operations</a></li><li><a href="module-PolicyPage-PolicyPage.html">PolicyPage</a></li><li><a href="module-SchedulePage-SchedulePage.html">SchedulePage</a></li><li><a href="module-VpnPage-VpnPage.html">VpnPage</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Aug 21 2018 17:05:39 GMT+0430 (Iran Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+/**
+ * @file policy pageObject
+ * @requires Operations to use its functions
+ * @requires Navigation to navigate to iptables and policy page
+ * @module PolicyPage
+ */
+
+
+var oper = require('../basic-modules/operations');
+var nav = require('../basic-modules/navigation');
+var env = require('../basic-modules/enviromentVariables');
+
+/**
+ * Policy class (pageObject) for accessing avalible elements and functions in the page
+ * @property {object} elm contains page elements in it
+ * @todo SOME ELEMENTS NEET TO BE CHANGE WITH ID LOCATORS
+ *
+ */
+class PolicyPage {
+    /**
+     * @constructor
+     */
+    constructor (){
+        this.elm = {
+            refreshButton : element(by.cssContainingText('button', 'refresh')),
+            addButton : element.all(by.cssContainingText('button', 'add')).last(),
+            popupAddButton : element(by.css('button[mattooltip="Add New Network Address"]')),
+            name : element(by.css('input[placeholder="Name"]')),
+            popupName : element.all(by.css('input[placeholder="Name"]')).last(),
+            ip : element(by.css('input[placeholder="ip"]')),
+            description : element(by.css('input[placeholder="Description"]')),
+            saveButton : element(by.cssContainingText('button', 'SAVE')),
+            popupSaveButton : element.all(by.cssContainingText('button', 'SAVE')).last(),
+            
+            //privacy type
+            IPSEC_button : element.all(by.cssContainingText('div', 'IPSEC')).last(),
+            ACCEPT_button : element.all(by.cssContainingText('div' , 'ACCEPT')).last(),
+            DROP_button : element.all(by.cssContainingText('div' , 'DROP')).last(),
+            
+            //enable button
+            natType : element(by.css('mat-select[placeholder="NAT Type"]')),
+            snatType : element(by.css('mat-select[placeholder="SNAT Type"]')),
+            dnatOption : element(by.cssContainingText('mat-option', 'DNAT')),
+            snatOption : element(by.cssContainingText('mat-option', 'SNAT')),
+            snatStaticOption : element(by.cssContainingText('mat-option', 'Static IP')),
+            mapToIP : element(by.css('input[placeholder="MAP to IP"]')),
+            mapToPort : element(by.css('input[placeholder="Map to Port"]')),
+            
+            geoIpSource : $('#source_geoip_add'),
+            geoIpDEstination : $('#destination_geoip_add'),
+            
+            checkButton : element(by.cssContainingText('button', 'check')),
+            EC : protractor.ExpectedConditions,
+            
+            DnatMessage : element(by.cssContainingText('div', 'Activating DNAT will disable the GEO IP section(Destination).')),
+            SnatMessage : element(by.cssContainingText('div', 'Activating SNAT will disable the GEO IP section(Source).')),
+            successMessage : element.all(by.cssContainingText('div', 'Added successfully.')).last(),
+            deleteMessage : element.all(by.cssContainingText('div', 'Deleted successfully.')).last(),
+            
+            toEditPolicyRow :  element(by.id('edit_new-policy-any')),
+            updateButton : element(by.cssContainingText('button', 'UPDATE')),
+            clone_button : element(by.cssContainingText('button', 'CLONE')),
+            cloneButton : element(by.id("clone_edited-policy")),
+            
+            searchInterface : element.all(by.css('input[placeholder="Search…"]')).last(),
+            message : element.all(by.css('div[class="snotifyToast__body ng-star-inserted"]')).last(),
+            searchInput : element(by.css('input[placeholder="Search or Add…"]')),
+            viewCountOptionButton : element(by.xpath('div[class="mat-paginator-page-size ng-star-inserted"]/descendant::mat-select')),
+            optionSelect100 : element.all(by.xpath('span[class="mat-option-text"]')).last(),
+
+            sourceNetworkButton : $('#source_network_add'),
+            destinationNetworkButton : $('#destination_network_add'),
+            sourceInterface : $('#incoming_interface_add'),
+            services : $("#service_add"),
+
+            logEnable : element(by.xpath('//mat-slide-toggle[./descendant::span[contains(text(),"Log")]]')),
+            natEnable : element(by.xpath('//mat-slide-toggle[./descendant::span[contains(text(),"NAT Enable ")]]')),
+            
+            
+            editFormLoad : element(by.xpath('//mat-toolbar-row/descendant::mat-icon[contains(text(),"edit")]')),
+            cloneFormLoad : element(by.xpath('//mat-toolbar-row/descendant::mat-icon[contains(text(),"content_copy")]')),
+        }
+    };
+    /**
+     * add service through the pop menu using "serviceName"
+     * @param {string} serviceName - name to find the service
+     */
+    addService (serviceName){
+        this.elm.services.click();
+        this.elm.searchInput.sendKeys(serviceName);
+        browser.wait(this.elm.EC.presenceOf(oper.selectRow(serviceName)), 5000);
+        oper.clickWhenClickable(oper.selectRow(serviceName), "service row");
+        browser.wait(this.elm.EC.presenceOf(this.elm.checkButton), 5000);
+        this.elm.checkButton.click();
+    };
+    /**
+     * create new source address and add it to the policy through popup menu
+     * 
+     * @param {string} nameAddress - name for the new address
+     * @param {string} ipAddress -ip for the new address
+     */
+    addSoAddress (nameAddress , ipAddress){
+        this.elm.sourceNetworkButton.click();
+        this.elm.popupAddButton.click();
+        this.elm.popupName.sendKeys(nameAddress);
+        this.elm.ip.sendKeys(ipAddress);
+        this.elm.popupSaveButton.click();
+        browser.wait(this.elm.EC.not(this.elm.EC.presenceOf(this.elm.ip)),12*1000);
+        this.elm.searchInput.sendKeys(nameAddress);
+        browser.wait(this.elm.EC.presenceOf(oper.selectRow(nameAddress)), 12*1000)
+        oper.selectRow(nameAddress).click();
+        this.elm.checkButton.click();
+        browser.wait(this.elm.EC.not(this.elm.EC.presenceOf(this.elm.ip)),10*1000);
+        this.waitForSuccussMessage();
+        // oper.waitForMessage('add');
+    };
+    /**
+     * create new destination address and add it to the policy through popup menu
+     * 
+     * @param {string} nameAddress - name for the new address
+     * @param {string} ipAddress - ip for the new address
+     */
+    addDesAddress (nameAddress , ipAddress){
+        this.elm.destinationNetworkButton.click();
+        this.elm.popupAddButton.click();
+        this.elm.popupName.sendKeys(nameAddress);
+        this.elm.ip.sendKeys(ipAddress);
+        this.elm.popupSaveButton.click();
+        browser.wait(this.elm.EC.not(this.elm.EC.presenceOf(this.elm.ip)),12*1000);
+        this.elm.searchInput.sendKeys(nameAddress);
+        browser.wait(this.elm.EC.presenceOf(oper.selectRow(nameAddress)), 8*1000);
+        oper.selectRow(nameAddress).click();
+        this.elm.checkButton.click();
+        browser.wait(this.elm.EC.not(this.elm.EC.presenceOf(this.elm.ip)),10*1000);
+        this.waitForSuccussMessage();
+        // oper.waitForMessage('add');
+    };
+    /**
+     * add destination Geo ip to the policy
+     * 
+     * @param {string} geoName - name  to fing the geo ip
+     */
+    addGeoIpDestination (geoName){
+        this.elm.geoIpDEstination.click();
+        this.elm.searchInterface.sendKeys(geoName);
+        browser.wait(this.elm.EC.presenceOf(oper.selectRow(geoName)), 8*1000);
+        oper.clickWhenClickable(oper.selectRow(geoName), "geo row select");
+        this.elm.checkButton.click();
+    };
+    /**
+     * add source Geo ip to the policy
+     * 
+     * @param {string} geoName -name to find the geo ip
+     */
+    addGeoIpSource (geoName){
+        this.elm.geoIpSource.click();
+        this.elm.searchInterface.sendKeys(geoName);
+        browser.wait(this.elm.EC.presenceOf(oper.selectRow(geoName)), 8*1000);
+        oper.clickWhenClickable(oper.selectRow(geoName) , "select geo this.elm.ip row");
+        this.elm.checkButton.click();
+    };
+    /**
+     * add a source interface to the policy
+     * 
+     * @param {string} interfaceName - name to find inter face
+     */
+    addSourceInterface (interfaceName){
+        this.elm.sourceInterface.click();
+        this.elm.searchInterface.sendKeys(interfaceName);
+        browser.wait(this.elm.EC.presenceOf(oper.selectRow(interfaceName)), 8000);
+        oper.clickWhenClickable(oper.selectRow(interfaceName), " source interface button");
+        this.elm.checkButton.click();
+    };
+    /**
+     * delete an policy using its name
+     * 
+     * @param {string} entryName -name to find the policy record
+     */
+    deletePolicy (entryName){
+        let deleteMessage = element.all(by.cssContainingText('div', 'Deleted successfully.')).last();
+        let record = element(by.cssContainingText('span', entryName));
+        browser.wait(this.elm.EC.presenceOf(element.all(by.cssContainingText('mat-icon', 'done')).first()), 8* 1000).then(null , () => {console.log("this delete may fail")});
+
+        oper.clickWhenClickable(element(by.id('delete_'+ entryName )), "delete button")
+        .then(() => {
+            oper.clickWhenClickable(oper.acceptDeletionButton() , "delete accept button")
+            .then( () => {
+            //wait for the message
+                browser.wait(this.elm.EC.presenceOf(deleteMessage),10 * 1000)
+                .then(() =>{
+                    oper.clickWhenClickable(deleteMessage , "delete message").then(null, () => {console.log("couldn't click on the delete message")});
+                    browser.wait(this.elm.EC.not(this.elm.EC.presenceOf(deleteMessage)),10*1000);
+                    browser.wait(this.elm.EC.not(this.elm.EC.presenceOf(record)),10*1000).then(null , () => console.log('recored still is being delete'));
+                }, () => {console.log("failure on clicking delete message")})
+            } , () => {console.log("failure in the middle of" +entryName +" deletion")})
+        } , () => { console.log(entryName + "'s deletion icon not found")})
+    };
+    /**
+     * to check if the created policy is set and visible from iptables
+     * this function find the records id then navigate to iptable page and chekd if the id is set or not,
+     * at the end it will navigate to the policy page
+     * 
+     * @param {string} policyName - name of the policy that needs to be checked
+     */
+    apiChecker (policyName) {
+        let policyId;
+        browser.wait(this.elm.EC.presenceOf(element(by.css('input[id="'+policyName+'"]'))), 8*1000).then(() => {
+            element(by.css('input[id="'+policyName+'"]')).getAttribute("value").then((value) => {
+            policyId = value;
+            console.log(value);
+            });
+        });
+        let idText = 'policy_id_' +  policyId;
+        browser.get (env.BASEURL + 'api/test/iptables' ).then(() => {
+            // check if we logged in before
+                element(by.cssContainingText('a', 'Log in')).click()
+                    .then(() => {
+                    element(by.id('id_username')).sendKeys("admin");
+                    element(by.id('id_password')).sendKeys("admin");
+                    element(by.id('submit-id-submit')).click();
+                }, () => {console.log("this has been already logged in")});
+        },() => {console.log("this.elm.ip table could fail on loading")});
+        expect(element(by.cssContainingText('span', idText))).toBeDefined();
+        // get back to the policy page
+        nav.goToPoliciy();
+    }
+    waitForSuccussMessage () {
+        browser.wait(this.elm.EC.presenceOf(this.elm.successMessage), 10 * 1000)
+        .then(() => {
+            oper.clickWhenClickable(this.elm.successMessage , "success message").then(null,(err) => {console.log("message could not be clicked on due to " + err)});
+            browser.wait(this.elm.EC.not(this.elm.EC.presenceOf(this.elm.successMessage)), 10*1000)
+            .then(null , (err) => {console.log("waiting for message to disapper did not worked.")}); 
+        }, (error) => {console.log("fail to detect the message due to " + error)});
+    };
+}
+
+module.exports = new PolicyPage();

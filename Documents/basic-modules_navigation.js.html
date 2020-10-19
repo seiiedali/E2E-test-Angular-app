@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: basic-modules/navigation.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: basic-modules/navigation.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** 
+* @file navigation pageObject
+* @module Navigation
+* @requires EnviromentVariables
+*/
+
+var env = require('./enviromentVariables');
+/**
+ * this page object contains all navigations function to navigate to any page easily,
+ * navigation function are mostly work without any parameter needed
+ * @class
+ */
+class Navigation {
+    constructor () {
+
+    }
+    /**
+     * this function let you to get any page of the site using "subDirectory" and on any server using "subDomain"
+     * @param {string} subDomain - in https://192.168.15.&lt;b>201&lt;/b> , &lt;i>"201"&lt;/i> is sub domain
+     * @param {string} subDirectory - specify the page directory like &lt;i>"objects/address"&lt;i>
+     */
+    goToPage(subDomain , subDirectory){
+        browser.get(env.BASEDOMAIN + subDomain + '/' + subDirectory );
+    }
+    /**
+     * 
+     */
+    goToLogInPage () {
+        browser.get (env.BASEURL + 'auth/login');
+    }
+    /**
+     * 
+     */
+    goToHome () {
+        browser.get ( env.BASEURL );
+    }
+    /**
+     * 
+     */
+    goToAddress () {
+        browser.get (env.BASEURL + 'objects/address');
+    }
+    /**
+     * 
+     */
+    goToVpn () {
+        browser.get (env.BASEURL + 'vpn/site-to-sites');
+    }
+    /**
+     * 
+     */
+    goToPoliciy () {
+        browser.get (env.BASEURL + 'policies/firewall');
+    }
+    /**
+     * 
+     */
+    goToSchedule () {
+        browser.get (env.BASEURL + 'objects/schedule');
+    }
+    /**
+     * 
+     */
+    goToDNS () {
+        browser.get (env.BASEURL + 'config/dns-records');
+    }
+    /**
+     * 
+     */
+    goToInterface () {
+        browser.get (env.BASEURL + 'config/interface');
+    }
+    /**
+     * 
+     */
+    goToIpTables () {
+        browser.get (env.BASEURL + 'api/test/iptables' );
+    }
+    /**
+     * 
+     */
+    goToServices (){
+        browser.get (env.BASEURL + 'objects/service');
+    }
+    /**
+     * 
+     */
+    goToBackups (){
+        browser.get (env.BASEURL + 'config/backup');
+    }
+    /**
+     * 
+     */
+    goToStaticRoutes (){
+        browser.get (env.BASEURL + 'config/static-route');
+    }
+    /**
+     * 
+     */
+    goToLogServer (){
+        browser.get (env.BASEURL + 'config/log-server');
+    }
+    /**
+     * 
+     */
+    goToGenaralSetting (){
+        browser.get (env.BASEURL + 'config/general-setting');
+    }
+    /**
+     * 
+     */
+    goToSystemSetting (){
+        browser.get (env.BASEURL + 'config/system-setting');
+    }/**
+     * 
+     */
+    goToSystemService (){
+        browser.get (env.BASEURL + 'config/system-service');
+    }
+    /**
+     * 
+     */
+    goToGeneralLog (){
+        browser.get (env.BASEURL + 'logs/general-log');
+    }
+    /**
+     * 
+     */
+    goToFirewallLog (){
+        browser.get (env.BASEURL + 'logs/firewall-log');
+    }
+    /**
+     * 
+     */
+    goToVpnLog (){
+        browser.get (env.BASEURL + 'logs/vpn-log');
+    }
+}
+
+module.exports = new Navigation();</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-AddressPage.html">AddressPage</a></li><li><a href="module-BaseElement.html">BaseElement</a></li><li><a href="module-DNS_recordsPage.html">DNS_recordsPage</a></li><li><a href="module-EnviromentVariables.html">EnviromentVariables</a></li><li><a href="module-LogPage.html">LogPage</a></li><li><a href="module-Navigation.html">Navigation</a></li><li><a href="module-Operations.html">Operations</a></li><li><a href="module-PolicyPage.html">PolicyPage</a></li><li><a href="module-SchedulePage.html">SchedulePage</a></li><li><a href="module-VpnPage.html">VpnPage</a></li></ul><h3>Classes</h3><ul><li><a href="module-AddressPage-AddressPage.html">AddressPage</a></li><li><a href="module-BaseElement-BaseElement.html">BaseElement</a></li><li><a href="module-DNS_recordsPage-DNS_recordsPage.html">DNS_recordsPage</a></li><li><a href="module-LogPage-LogPage.html">LogPage</a></li><li><a href="module-Navigation-Navigation.html">Navigation</a></li><li><a href="module-Operations-Operations.html">Operations</a></li><li><a href="module-PolicyPage-PolicyPage.html">PolicyPage</a></li><li><a href="module-SchedulePage-SchedulePage.html">SchedulePage</a></li><li><a href="module-VpnPage-VpnPage.html">VpnPage</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Aug 21 2018 17:05:39 GMT+0430 (Iran Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
