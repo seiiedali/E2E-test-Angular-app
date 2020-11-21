@@ -60,4 +60,4 @@ A full code documentation is also provided in [`./Documents/index.html`](./Docum
 
 * Protractor is suppose to test angular web pages, but due to (maybe) zone.js problem, protractor can't find angular on the webApllication. So we turn the `waitForAngularEnabled` off by change its value to `false`, which basically turn the protractor main feature off (to interact directly with angular), so we're doing these test in a nonAngular manner and so many difficulty in angular rendering are expected.
 
-* to see more detail on this problem visit this [stack overflow issue report](https://stackoverflow.com/questions/28873680/error-timed-out-waiting-for-protractor-to-synchronize-with-the-page-after-11-sec) or [this link](https://stackoverflow.com/questions/50344720/protractor-cant-detect-angular-5-on-deployed-application).
+* To see more detail on this problem visit this [stack overflow issue report](https://stackoverflow.com/questions/28873680/error-timed-out-waiting-for-protractor-to-synchronize-with-the-page-after-11-sec) or [this link](https://stackoverflow.com/questions/50344720/protractor-cant-detect-angular-5-on-deployed-application).
