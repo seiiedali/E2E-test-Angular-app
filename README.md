@@ -1,14 +1,15 @@
-# E2E testing in SOC web application
+# Automated End-to-End (E2E) testing for a SOC web application
 
-## About the product
+## About the SOC product
 
-It's an Enterprise-level web application in cybersecurity domain (SOC) for managing and creating secure network
+It's an Enterprise-level web application in cybersecurity domain (SOC) for managing and creating secure network.
 
 ## About E2E testing
 
-The application uses angular, and to perform end-to-end tests, we're using protractor as the main tool which can be installed by npm package management.
+The application uses angular, and to perform end-to-end tests, we're using **Protractor** along with **Jasmin** testing frameworks as the main tool which can be installed by npm package management. The developed scenarios test cases uses **Selenium** to run into the targeted application.
 
-Full documentation from scratch to configure the system and run the tests are provided on this [documentation](https://docs.google.com/document/d/1HZfV6-9JdzKCQLOcx0-Pi1x1VYxOTxErEMxl1Y2GypM/edit?usp=sharing). This will help you to install, run and have some optional features on protractor. 
+Full documentation from scratch including configuring the system and runing the tests are provided on this [documentation](https://docs.google.com/document/d/1HZfV6-9JdzKCQLOcx0-Pi1x1VYxOTxErEMxl1Y2GypM/edit?usp=sharing). This will help you to install, run and have some optional features on protractor. 
+
 ## Scenarios
 
 Test cases are based on the scenarios which are available on this [google doc](https://docs.google.com/document/d/1M8aOlbnnmYOD1yZoN0cHsL6YXJRb-RZ-SzfSXyzdtv8/edit?usp=sharing). Details about this scenarios format is provided in [`./scenarios/scenarios.md`](./scenarios/scenarios.md) file.
