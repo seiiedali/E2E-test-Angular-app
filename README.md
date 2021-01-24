@@ -14,7 +14,7 @@ Full documentation from scratch to configure the system and run the tests are pr
 Test cases are based on the scenarios which are available on this [google doc](https://docs.google.com/document/d/1M8aOlbnnmYOD1yZoN0cHsL6YXJRb-RZ-SzfSXyzdtv8/edit?usp=sharing). Details about this scenarios format is provided in [`./scenarios/scenarios.md`](./scenarios/scenarios.md) file.
 Raw scenarios are also available in DOCX files in `./scenarios/`.
 
-## Project structure
+## Project structure (PageObject Design Pattern)
 
 - **`protractor.conf.js`**
 
